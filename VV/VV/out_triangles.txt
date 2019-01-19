@@ -1,0 +1,34 @@
+count triangles = 8
+
+point 0 x 0 y 4
+point 1 x 0 y 2
+point 3 x 2 y 4
+
+point 1 x 0 y 2
+point 4 x 2 y 2
+point 3 x 2 y 4
+
+point 1 x 0 y 2
+point 2 x 0 y 0
+point 4 x 2 y 2
+
+point 2 x 0 y 0
+point 5 x 2 y 0
+point 4 x 2 y 2
+
+point 3 x 2 y 4
+point 4 x 2 y 2
+point 6 x 4 y 4
+
+point 4 x 2 y 2
+point 7 x 4 y 2
+point 6 x 4 y 4
+
+point 4 x 2 y 2
+point 5 x 2 y 0
+point 7 x 4 y 2
+
+point 5 x 2 y 0
+point 8 x 4 y 0
+point 7 x 4 y 2
+
