@@ -95,10 +95,14 @@ void LCoordinate2D::defineKoeff() {
 	a[2] = pointI->x*pointJ->y - pointJ->x*pointI->y;
 	b[2] = pointI->y - pointJ->y;
 	c[2] = pointJ->x - pointI->x;
-
+/*
 	L1 = 1 / (2 * detA)*(a[0] + b[0] * pointI->x + c[0] * pointI->y);
 	L2 = 1 / (2 * detA)*(a[1] + b[1] * pointJ->x + c[1] * pointJ->y);
 	L3 = 1 / (2 * detA)*(a[2] + b[2] * pointK->x + c[2] * pointK->y);
+*/
+	L1 = 1 / (2 * detA)*(a[0] + b[0] * (pointK->getX() + pointJ->getX()) / 2 + c[0] * (pointK->getY() + pointJ->getY()) / 2);
+	L2 = 1 / (2 * detA)*(a[1] + b[1] * (pointK->getX() + pointI->getX()) / 2 + c[1] * (pointK->getY() + pointI->getY()) / 2);
+	L3 = 1 / (2 * detA)*(a[2] + b[2] * (pointI->getX() + pointJ->getX()) / 2 + c[2] * (pointI->getY() + pointJ->getY()) / 2);
 }
 
 void LCoordinate2D::defineMatrK()
@@ -131,9 +135,9 @@ double** LCoordinate2D::multiply(double** matrix, double alpha) {
 
 double LCoordinate2D::integral(double (*func_k)(double, double ))
 {
- 	double a = func_k(abs(pointI->x - pointK->x), abs(pointI->y - pointK->y));
-	double b = func_k(abs(pointI->x - pointJ->x), abs(pointI->y - pointJ->y));
-	double c = func_k(abs(pointJ->x - pointK->x), abs(pointJ->y - pointK->y));
+ 	double a = func_k((pointI->x + pointK->x)/2, (pointI->y + pointK->y)/2);
+	double b = func_k((pointI->x - pointJ->x)/2, (pointI->y - pointJ->y)/2);
+	double c = func_k((pointJ->x - pointK->x)/2, (pointJ->y - pointK->y)/2);
 
 	return (detA / 3)*(a + b + c);
 }

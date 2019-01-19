@@ -24,6 +24,7 @@ int main()
 	//		fst << /*i + j*(rec->count_y) << ": " <<*/ (U[i + j*(rec->count_y)] - remainder(U[i + j*(rec->count_y)], denom))<< "  ";
 	//
 	
+	rec->print_k();
 	
 	for (int i = 0; i < rec->count_points; i++)
 		fst << (U[i] - remainder(U[i], denom)) << endl;

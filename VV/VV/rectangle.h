@@ -169,22 +169,24 @@ public:
 		for (std::list<triangle2D>::iterator tr = list_of_triangles->begin(); tr != list_of_triangles->end(); tr++)
 			compare_triangle(*tr);
 
-		for (int i = 0; i < count_points; i++, printf("  =  %2.f  \n", f[i]))
-			for (int j = 0; j < count_points; j++)
-				printf("%2.f ", k[i][j]);
-		
+		print_k();
+
 		border_conditions();
-		
-		for (int i = 0; i < count_points; i++, printf("  =  %2.f  \n", f[i]))
-			for (int j = 0; j < count_points; j++)
-				printf("%2.f ", k[i][j]);
 
 		U = gauss(k, f, count_points);
 
 		return U;
 	}
 
+	void
+	print_k()
+	{
+		for (int i = 0; i < count_points; printf("  =  %.2f  \n", f[i]), i++)
+			for (int j = 0; j < count_points; j++)
+				printf("%.2f ", k[i][j]);
+		printf("\n\n");
 
+	}
 	void
 	compare_triangle(triangle2D tr)
 	{
@@ -204,25 +206,22 @@ public:
 	sub_from_matrix(double T, int stb)
 	{
 		double _k = k[stb][stb];
-		printf("\n k\n");
-
+		
 		for (int i = 0; i < count_points; i++)
 		{
-			k[stb][i] /= _k;
-			printf("%2.f ", k[stb][i]);
+			k[stb][i] = k[stb][i] / _k;
 		}
 		f[stb] /= _k;
-
-		printf("\n f\n");
-
-		for (int i = 0; i < count_points; k[i][stb] = 0, i++)
+		
+		for (int i = 0; i < count_points; i++)
 		{
-			f[i] -= k[i][stb] * T;
-			printf("%2.f ", f[i]);
-
+			if (i != stb) {
+				double temp = k[i][stb] * T;
+				k[i][stb] -= temp;
+				f[i] -= temp;
+			}
 		}
 
-		k[stb][stb] = 1;
 	}
 
 	void
@@ -231,16 +230,18 @@ public:
 		for (int i = 0; i < count_y; i++)
 		{
 			sub_from_matrix(func_phi(x0, std::max(y0, y1 - hy * i)), i);
+			//print_k();
 			sub_from_matrix(func_phi(x1, std::max(y0, y1 - hy * i)), i + ((count_y) * (count_x - 1)));
-
+			//print_k();
 		}
 
 
 		for (int j = 1; j < count_x - 1; j++)
 		{
 			sub_from_matrix(func_phi(std::min(x1, x0 + j*hx), y0), j * (count_y));
+			//print_k();
 			sub_from_matrix(func_phi(x1, std::max(y0, y1 - hy * j)), j * (count_y) + (count_y -1));
-
+			//print_k();
 		}
 
 	}
