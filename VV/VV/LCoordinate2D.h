@@ -37,13 +37,13 @@ public:
 	}
 
 	void evalParams() {
-		
+
 		detA = 0.5 * ((pointJ->x * pointK->y - pointJ->y * pointK->x)
 			- (pointI->x * pointK->y - pointI->y * pointK->x)
 			+ (pointI->x * pointJ->y - pointI->y * pointJ->x));
 
 		defineKoeff();
-		
+
 		defineMatrK();
 		defineVecF();
 	}
@@ -66,9 +66,9 @@ private:
 	void defineMatrK();
 	void defineVecF();
 	double ** multiply(double ** matrix, double alpha);
-	double integral(double(*func_k)(double , double));
+	double integral(double(*func_k)(double, double));
 	double k(int i, int j);
-
+	double LCoordinate2D::N(Point2D x, double a, double b, double c);
 
 };
 
@@ -83,6 +83,13 @@ LCoordinate2D::~LCoordinate2D()
 {
 }
 
+
+double LCoordinate2D::N(Point2D x, double a, double b, double c)
+{
+	return(1 / (2 * detA)*(a + b * x.getX() + c * x.getY()));
+}
+
+
 void LCoordinate2D::defineKoeff() {
 	a[0] = pointJ->x*pointK->y - pointK->x*pointJ->y;
 	b[0] = pointJ->y - pointK->y;
@@ -90,27 +97,32 @@ void LCoordinate2D::defineKoeff() {
 
 	a[1] = pointK->x*pointI->y - pointI->x*pointK->y;
 	b[1] = pointK->y - pointI->y;
-	c[1] = pointI->x - pointK->y;
+	c[1] = pointI->x - pointK->x;
 
 	a[2] = pointI->x*pointJ->y - pointJ->x*pointI->y;
 	b[2] = pointI->y - pointJ->y;
 	c[2] = pointJ->x - pointI->x;
-/*
-	L1 = 1 / (2 * detA)*(a[0] + b[0] * pointI->x + c[0] * pointI->y);
-	L2 = 1 / (2 * detA)*(a[1] + b[1] * pointJ->x + c[1] * pointJ->y);
-	L3 = 1 / (2 * detA)*(a[2] + b[2] * pointK->x + c[2] * pointK->y);
-*/
-	L1 = 1 / (2 * detA)*(a[0] + b[0] * (pointK->getX() + pointJ->getX()) / 2 + c[0] * (pointK->getY() + pointJ->getY()) / 2);
+	
+		L1 = 1 / (2 * detA)*(a[0] + b[0] * pointI->x + c[0] * pointI->y);
+		L2 = 1 / (2 * detA)*(a[1] + b[1] * pointJ->x + c[1] * pointJ->y);
+		L3 = 1 / (2 * detA)*(a[2] + b[2] * pointK->x + c[2] * pointK->y);
+	
+	/*L1 = 1 / (2 * detA)*(a[0] + b[0] * (pointK->getX() + pointJ->getX()) / 2 + c[0] * (pointK->getY() + pointJ->getY()) / 2);
 	L2 = 1 / (2 * detA)*(a[1] + b[1] * (pointK->getX() + pointI->getX()) / 2 + c[1] * (pointK->getY() + pointI->getY()) / 2);
 	L3 = 1 / (2 * detA)*(a[2] + b[2] * (pointI->getX() + pointJ->getX()) / 2 + c[2] * (pointI->getY() + pointJ->getY()) / 2);
+*/
+	/*printf("i: %f, j: %f, k:%f \n",
+		N(*pointI, a[0], b[0], c[0]),
+		N(*pointJ, a[1], b[1], c[1]),
+		N(*pointK, a[2], b[2], c[2]));*/
 }
 
 void LCoordinate2D::defineMatrK()
 {
 	for (int i = 0; i < COUNT_CONUS; i++)
- 		for (int j = 0; j < COUNT_CONUS; j++)
+		for (int j = 0; j < COUNT_CONUS; j++)
 			matrK[i][j] = k(i, j);
-	
+
 }
 
 void LCoordinate2D::defineVecF()
@@ -133,11 +145,11 @@ double** LCoordinate2D::multiply(double** matrix, double alpha) {
 	return matrix;
 }
 
-double LCoordinate2D::integral(double (*func_k)(double, double ))
+double LCoordinate2D::integral(double(*func_k)(double, double))
 {
- 	double a = func_k((pointI->x + pointK->x)/2, (pointI->y + pointK->y)/2);
-	double b = func_k((pointI->x - pointJ->x)/2, (pointI->y - pointJ->y)/2);
-	double c = func_k((pointJ->x - pointK->x)/2, (pointJ->y - pointK->y)/2);
+	double a = func_k((pointI->x + pointK->x) / 2, (pointI->y + pointK->y) / 2);
+	double b = func_k((pointI->x - pointJ->x) / 2, (pointI->y - pointJ->y) / 2);
+	double c = func_k((pointJ->x - pointK->x) / 2, (pointJ->y - pointK->y) / 2);
 
 	return (detA / 3)*(a + b + c);
 }
@@ -145,7 +157,7 @@ double LCoordinate2D::integral(double (*func_k)(double, double ))
 
 double LCoordinate2D::k(int i, int j)
 {
-	return (b[i] * b[j] /(4*detA) * integral(func_kxx) + c[i]*c[j]/(4*detA)*integral(func_kyy));
+	return (b[i] * b[j] / (4 * detA) * integral(func_kxx) + c[i] * c[j] / (4 * detA)*integral(func_kyy));
 }
 
 #endif // !LCOOR_H

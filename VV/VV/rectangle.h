@@ -23,7 +23,7 @@ public:
 
 	triangle2D(double ix, double iy, double jx, double jy, double kx, double ky, bool i, bool j, bool k, int ni, int nj, int nk)
 	{
-		points = (Point2D*)std::malloc(3 * sizeof(Point2D));//new Point2D *[3];
+		points = (Point2D*)std::malloc(3 * sizeof(Point2D));
 
 
 		this->points[0] = Point2D(ix, iy, ni);
@@ -134,7 +134,7 @@ public:
 
 		f_.open("out_triangles.txt", std::ios_base::out, std::ios_base::trunc);
 		
-		f_ << "count triangles = " << list_of_triangles->size() << endl << endl;
+		f_ << list_of_triangles->size() << endl << endl;
 
 		for (std::list<triangle2D>::iterator it = list_of_triangles->begin(); it != list_of_triangles->end(); it++)
 		{
@@ -153,7 +153,8 @@ public:
 			(*it).f = triangle->vecF;
 			
 			for (int i = 0; i < 3; i++)
-				f_ << "point " << (*it).points[i].num << " x " << (*it).points[i].getX() << " y " << (*it).points[i].getY() << endl;
+				//f_ << "point " << (*it).points[i].num << " x " << (*it).points[i].getX() << " y " << (*it).points[i].getY() << endl;
+				f_ << (*it).points[i].num <<" "<< (*it).points[i].getX() << " " <<  (*it).points[i].getY() << endl;
 			f_ << endl;
 							
 		}
@@ -169,7 +170,7 @@ public:
 		for (std::list<triangle2D>::iterator tr = list_of_triangles->begin(); tr != list_of_triangles->end(); tr++)
 			compare_triangle(*tr);
 
-		print_k();
+		//print_k();
 
 		border_conditions();
 
@@ -187,19 +188,32 @@ public:
 		printf("\n\n");
 
 	}
+
+	void
+		print_k_in_triangle(triangle2D tr)
+	{
+		for (int i = 0; i < COUNT_CONUS; printf("  =  %.2f  \n", tr.f[i]), i++)
+			for (int j = 0; j < COUNT_CONUS; j++)
+				printf("%.2f   ", tr.matr_k[i][j]);
+		printf("\n\n");
+
+	}
+	
 	void
 	compare_triangle(triangle2D tr)
 	{
+		//print_k_in_triangle(tr);
+
 		for (int i = 0; i < count_points; i++)
 			for (int c1 = 0; c1 < 3; c1++)
 				if (i == tr.points[c1].num)
+				{
+					f[i] += tr.f[c1];
 					for (int j = 0; j < count_points; j++)
 						for (int c2 = 0; c2 < 3; c2++)
 							if (j == tr.points[c2].num)
-							{
 								k[i][j] += tr.matr_k[c1][c2];
-								f[i] = tr.f[c1];//??
-							}
+				}
 	}
 
 	void

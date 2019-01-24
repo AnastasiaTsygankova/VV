@@ -10,24 +10,26 @@
 
 int main()
 {
-	double  denom = 0.00001; //желаемая точность
+	double  denom = 0.001; //желаемая точность
 	rectangle *rec = new rectangle(x_start, x_end, y_start, y_end, hx, hy);
 	double *U = rec->calculate_temp();
 
 	fstream fst;
 
 	fst.open("out_U.txt", std::ios_base::out, std::ios_base::trunc);
+
+	fst << rec->count_x << " " << rec->count_y << endl;
+
+	for (int i = 0; i < rec->count_x; fst << "\n", i++)
+		for (int j = 0; j < rec->count_y; j++)
+			//printf("%d: %.2f  ", i + j*(rec->count_y), U[i + j*(rec->count_y)]);
+			fst << /*i + j*(rec->count_y) << ": " <<*/ (U[i + j*(rec->count_y)] - remainder(U[i + j*(rec->count_y)], denom))<< "  ";
 	
-	//for (int i = 0; i < rec->count_x; fst << "\n", i++)
-	//	for (int j = 0; j < rec->count_y; j++)
-	//		//printf("%d: %.2f  ", i + j*(rec->count_y), U[i + j*(rec->count_y)]);
-	//		fst << /*i + j*(rec->count_y) << ": " <<*/ (U[i + j*(rec->count_y)] - remainder(U[i + j*(rec->count_y)], denom))<< "  ";
-	//
 	
-	rec->print_k();
+	//rec->print_k();
 	
-	for (int i = 0; i < rec->count_points; i++)
-		fst << (U[i] - remainder(U[i], denom)) << endl;
+	//for (int i = 0; i < rec->count_points; i++)
+	//	fst << (U[i] - remainder(U[i], denom)) << endl;
 
 	
 	fst.close();
